@@ -12,7 +12,7 @@
 //   Future<Result<AuthFailure, void>> logout();
 // }
 
-import '../../../../core/error_handling/result.dart';
+import '../../../../core/common/result.dart';
 import '../entities/user.dart';
 import '../failures/auth_failure.dart';
 import '../value_objects/email.dart';

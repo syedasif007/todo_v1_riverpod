@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import '../../../../core/network/http_client.dart';
+import '../../../../core/infrastructure/network/http_client.dart';
 import '../datasources/auth_remote_datasource.dart';
 import '../dtos/user_dto.dart';
 import '../../domain/failures/auth_failure.dart';

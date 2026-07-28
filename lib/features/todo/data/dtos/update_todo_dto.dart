@@ -1,4 +1,4 @@
-import '../../../../core/utils/safe_value_parser.dart';
+import '../../../../core/utils/value_parsing/safe_value_parser.dart';
 
 class UpdateTodoDto {
   final String title;

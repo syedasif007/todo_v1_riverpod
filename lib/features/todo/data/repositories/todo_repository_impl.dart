@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import '../../../../core/error_handling/result.dart';
+import '../../../../core/common/result.dart';
 import '../../domain/entities/todo.dart';
 import '../../domain/failures/todo_failure.dart';
 import '../../domain/repositories/todo_repository.dart';

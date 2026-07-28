@@ -1,4 +1,4 @@
-import '../../../../core/error_handling/result.dart';
+import '../../../../core/common/result.dart';
 import '../entities/todo.dart';
 import '../failures/todo_failure.dart';
 

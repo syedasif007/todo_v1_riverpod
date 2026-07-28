@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import '../../../../core/network/http_client.dart';
+import '../../../../core/infrastructure/network/http_client.dart';
 import '../datasources/todo_remote_datasource.dart';
 import '../dtos/todo_dto.dart';
 

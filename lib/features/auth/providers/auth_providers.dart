@@ -30,7 +30,7 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/providers/dio_provider.dart';
+import '../../../core/infrastructure/di/network_providers.dart';
 import '../application/usecases/login_usecase.dart';
 import '../data/datasources/auth_remote_datasource.dart';
 import '../data/datasources/auth_remote_datasource_impl.dart';

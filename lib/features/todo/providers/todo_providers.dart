@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/providers/dio_provider.dart';
+import '../../../core/infrastructure/di/network_providers.dart';
 import '../application/usecases/fetch_todo_list_usecase.dart';
 import '../data/datasources/todo_remote_datasource.dart';
 import '../data/datasources/todo_remote_datasource_impl.dart';
