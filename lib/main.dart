@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todo_v1_riverpod/features/todo/presentation/pages/todo_list_page.dart';
+import 'package:todo_v1_riverpod/features/auth/presentation/pages/auth_gate.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const TaskListPage(),
+      home: const AuthGate(),
     );
   }
 }

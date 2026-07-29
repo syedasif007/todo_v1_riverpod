@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../domain/entities/user.dart';
 import '../../domain/failures/auth_failure.dart';
+import '../../domain/repositories/auth_repository.dart';
 import '../../domain/value_objects/email.dart';
 import '../../domain/value_objects/password.dart';
 import '../../application/usecases/login_usecase.dart';
@@ -22,10 +23,12 @@ class AuthControllerState {
 
 class AuthController extends AsyncNotifier<AuthControllerState> {
   late LoginUseCase _loginUseCase;
+  late AuthRepository _authRepository;
 
   @override
   Future<AuthControllerState> build() async {
     _loginUseCase = ref.read(loginUseCaseProvider);
+    _authRepository = ref.read(authRepositoryProvider);
     return const AuthControllerState.initial();
   }
 
@@ -42,5 +45,13 @@ class AuthController extends AsyncNotifier<AuthControllerState> {
           AsyncData(AuthControllerState.initial().copyWith(failure: failure)),
       (user) => AsyncData(AuthControllerState.initial().copyWith(user: user)),
     );
+  }
+
+  /// Clears persisted tokens + user via the repository and resets state so
+  /// any future build / navigation knows the user is signed out.
+  Future<void> logout() async {
+    state = const AsyncLoading();
+    await _authRepository.logout();
+    state = const AsyncData(AuthControllerState.initial());
   }
 }

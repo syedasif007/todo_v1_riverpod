@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/value_objects/email.dart';
 import '../../domain/value_objects/password.dart';
 import '../../providers/auth_providers.dart';
+import '../../../todo/presentation/pages/todo_list_page.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -16,6 +17,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _email = TextEditingController();
   final _password = TextEditingController();
+
+  // Guard against re-pushing TaskListPage on rebuilds. pushReplacement
+  // removes this page from the navigator, so the listener is also
+  // disposed and this flag is reset the next time the page is built
+  // (e.g. after a logout).
+  bool _navigated = false;
 
   // Re-validate as the user types so the UI updates live.
   void _onEmailChanged() => setState(() {});
@@ -55,8 +62,28 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         .login(email: emailVO.value, password: passwordVO.value);
   }
 
+  /// When the controller's state flips to a logged-in [User], push the
+  /// TaskListPage as a replacement so the login screen is removed from
+  /// the stack and Back doesn't return to it.
+  void _handleAuthStateChange(AsyncValue<dynamic> next) {
+    if (_navigated) return;
+    final data = next.asData?.value;
+    final user = data?.user;
+    if (user == null) return;
+
+    _navigated = true;
+    Navigator.of(context, rootNavigator: true).pushReplacement(
+      MaterialPageRoute<void>(builder: (_) => const TaskListPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Listen for login completion and route on success.
+    ref.listen<AsyncValue<dynamic>>(
+      authControllerProvider,
+      (_, next) => _handleAuthStateChange(next),
+    );
     final state = ref.watch(authControllerProvider);
     final isLoading = state.isLoading;
 
