@@ -3,37 +3,37 @@ import '../../domain/entities/todo.dart';
 
 class TodoDto {
   final int id;
-  final String title;
-  final String description;
+  final int userId;
+  final String todo;
   final bool completed;
 
   const TodoDto({
     required this.id,
-    required this.title,
-    required this.description,
+    required this.userId,
+    required this.todo,
     required this.completed,
   });
 
   factory TodoDto.fromJson(Map<String, dynamic> json) {
     return TodoDto(
       id: SafeValueParser.readInt(json['id']),
-      title: SafeValueParser.readString(json['title']),
-      description: SafeValueParser.readString(json['description']),
+      userId: SafeValueParser.readInt(json['userId']),
+      todo: SafeValueParser.readString(json['todo']),
       completed: SafeValueParser.readBool(json['completed']),
     );
   }
 
   Map<String, dynamic> toJson() => {
     'id': id,
-    'title': title,
-    'description': description,
+    'userId': userId,
+    'todo': todo,
     'completed': completed,
   };
 
   Todo toEntity() => Todo(
     id: id.toString(),
-    title: title,
-    description: description,
+    todo: todo,
+    userId: userId.toString(),
     isCompleted: completed,
   );
 }

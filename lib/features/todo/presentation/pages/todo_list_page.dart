@@ -23,10 +23,39 @@ class TaskListPage extends ConsumerWidget {
       ),
       body: todosAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(child: Text('Error: $error')),
+        error: (error, _) => Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Error: $error'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () =>
+                    ref.read(todoControllerProvider.notifier).refresh(),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
         data: (state) {
           if (state.failure != null) {
-            return Center(child: Text(state.failure.toString()));
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(state.failure.toString(), textAlign: TextAlign.center),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () =>
+                          ref.read(todoControllerProvider.notifier).refresh(),
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              ),
+            );
           }
 
           return ListView.builder(
@@ -34,8 +63,8 @@ class TaskListPage extends ConsumerWidget {
             itemBuilder: (_, index) {
               final todo = state.todos[index];
               return ListTile(
-                title: Text(todo.title),
-                subtitle: Text(todo.description),
+                title: Text(todo.userId),
+                subtitle: Text(todo.todo),
                 leading: Checkbox(value: todo.isCompleted, onChanged: null),
               );
             },

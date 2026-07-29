@@ -12,15 +12,21 @@ class TodoRemoteDatasourceImpl implements TodoRemoteDatasource {
   @override
   Future<List<TodoDto>> fetchTodoList() async {
     try {
-      final response = await _http.dio.get<List<dynamic>>('todos');
+      final response = await _http.dio.get<Map<String, dynamic>>('todos');
       final data = response.data;
 
       if (data == null) {
         return const [];
       }
 
-      return data
-          .map((item) => TodoDto.fromJson(item as Map<String, dynamic>))
+      final rawList = data['todos'] as List<dynamic>?;
+      if (rawList == null) {
+        return const [];
+      }
+
+      return rawList
+          .cast<Map<String, dynamic>>()
+          .map((item) => TodoDto.fromJson(item))
           .toList();
     } on DioException catch (e) {
       final isNetwork =
@@ -36,8 +42,6 @@ class TodoRemoteDatasourceImpl implements TodoRemoteDatasource {
         );
       }
 
-      rethrow;
-    } catch (_) {
       rethrow;
     }
   }

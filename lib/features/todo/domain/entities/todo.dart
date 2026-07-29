@@ -1,13 +1,13 @@
 class Todo {
   final String id;
-  final String title;
-  final String description;
+  final String userId;
+  final String todo;
   final bool isCompleted;
 
   const Todo({
     required this.id,
-    required this.title,
-    required this.description,
+    required this.userId,
+    required this.todo,
     required this.isCompleted,
   });
 }
