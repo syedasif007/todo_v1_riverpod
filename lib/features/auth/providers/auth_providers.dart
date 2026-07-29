@@ -42,9 +42,13 @@ final authRemoteDatasourceProvider = Provider<AuthRemoteDatasource>((ref) {
   return AuthRemoteDatasourceImpl(http);
 });
 
-final authRepositoryProvider = Provider((ref) {
+final authRepositoryProvider = Provider<AuthRepositoryImpl>((ref) {
   final remote = ref.watch(authRemoteDatasourceProvider);
-  return AuthRepositoryImpl(remote);
+  return AuthRepositoryImpl(
+    remote,
+    refreshDatasource: ref.watch(tokenRefreshDatasourceProvider),
+    tokenStorage: ref.watch(authTokenStorageProvider),
+  );
 });
 
 final loginUseCaseProvider = Provider<LoginUseCase>((ref) {
@@ -56,3 +60,11 @@ final authControllerProvider =
     AsyncNotifierProvider<AuthController, AuthControllerState>(
       AuthController.new,
     );
+
+/// Returns the persisted user (if any) on app start so the splash screen can
+/// decide whether to navigate to login or straight to home.
+final sessionProvider = FutureProvider<bool>((ref) async {
+  final repo = ref.watch(authRepositoryProvider);
+  final result = await repo.restoreSession();
+  return result.isSuccess;
+});
