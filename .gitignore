@@ -81,3 +81,24 @@ ios/Podfile
 ios/Podfile.lock
 macos/Podfile
 macos/Podfile.lock
+
+# Defensive root-level safety net for the patterns listed above. The
+# per-platform `.gitignore` files (ios/, macos/, android/, linux/,
+# windows/) already cover these paths inside their trees, but listing the
+# patterns here as well keeps things tidy if anyone ever adds a new
+# platform target without remembering to ship a matching `.gitignore`.
+**/Flutter/Generated.xcconfig
+**/Flutter/ephemeral/
+**/Flutter/flutter_export_environment.sh
+**/GeneratedPluginRegistrant.*
+**/Pods/
+**/.symlinks/
+**/build/
+
+# Flutter Version Management (https://fvm.app/) — stores per-machine SDK
+# versions and a copy of each installed Flutter SDK.
+.fvm/
+
+# Personal pubspec overrides (e.g. for local-only dev dependencies that
+# should never ship to CI or other developers).
+pubspec_overrides.yaml
