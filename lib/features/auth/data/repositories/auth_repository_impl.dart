@@ -1,3 +1,10 @@
+// ignore_for_file: prefer_initializing_formals
+// The constructor intentionally uses public-named params for the DI surface
+// while keeping the fields private (prefixed with `_`) as an implementation
+// detail, so the initializing-formal shortcut cannot be used.
+
+import 'package:flutter/foundation.dart';
+
 import '../../../../core/common/result.dart';
 import '../../../../core/services/auth_token_storage.dart';
 import '../../domain/entities/user.dart';
@@ -5,6 +12,7 @@ import '../../domain/failures/auth_failure.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/value_objects/email.dart';
 import '../../domain/value_objects/password.dart';
+import '../../domain/value_objects/username.dart';
 import '../datasources/auth_remote_datasource.dart';
 import '../datasources/token_refresh_datasource.dart';
 import '../dtos/user_dto.dart';
@@ -23,12 +31,14 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Result<AuthFailure, User>> login({
-    required Email email,
+    required Username username,
+    // required Email email,
     required Password password,
   }) async {
     try {
       final model = await _remote.login(
-        email: email.value,
+        username: username.value,
+        // email: email.value,
         password: password.value,
       );
 
@@ -42,8 +52,18 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return SuccessResult<AuthFailure, User>(model.toEntity());
     } on AuthFailure catch (f) {
+      if (kDebugMode) {
+        print(
+          '#1-AuthRemoteDatasourceImpl.login: Unexpected error: ${f.message}',
+        );
+      }
       return FailureResult<AuthFailure, User>(f);
-    } catch (_) {
+    } catch (e) {
+      if (kDebugMode) {
+        print(
+          '#2-AuthRemoteDatasourceImpl.login: Unexpected error: ${e.toString()}',
+        );
+      }
       return const FailureResult<AuthFailure, User>(UnexpectedFailure());
     }
   }
@@ -98,18 +118,12 @@ class AuthRepositoryImpl implements AuthRepository {
 
       final fresh = await _refreshDatasource.refresh(refreshToken: refresh);
 
-      // Preserve the cached user blob — refresh only swaps tokens.
-      await _tokenStorage.writeTokens(
+      // Single write: swap tokens, preserve the cached user blob.
+      await _tokenStorage.write(
         accessToken: fresh.accessToken,
         refreshToken: fresh.refreshToken,
+        user: stored.user,
       );
-      if (stored.user != null) {
-        await _tokenStorage.write(
-          accessToken: fresh.accessToken,
-          refreshToken: fresh.refreshToken,
-          user: stored.user,
-        );
-      }
       return const SuccessResult<AuthFailure, void>(null);
     } on TokenRefreshException catch (f) {
       // Refresh token is no longer valid; wipe stored credentials.
@@ -119,7 +133,12 @@ class AuthRepositoryImpl implements AuthRepository {
       );
     } on AuthFailure catch (f) {
       return FailureResult<AuthFailure, void>(f);
-    } catch (_) {
+    } catch (e) {
+      if (kDebugMode) {
+        print(
+          '#3-AuthRemoteDatasourceImpl.login: Unexpected error: ${e.toString()}',
+        );
+      }
       return const FailureResult<AuthFailure, void>(UnexpectedFailure());
     }
   }

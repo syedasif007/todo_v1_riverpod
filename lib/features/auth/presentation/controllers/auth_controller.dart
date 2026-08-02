@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo_v1_riverpod/features/auth/domain/value_objects/username.dart';
 
 import '../../domain/entities/user.dart';
 import '../../domain/failures/auth_failure.dart';
@@ -32,11 +33,15 @@ class AuthController extends AsyncNotifier<AuthControllerState> {
     return const AuthControllerState.initial();
   }
 
-  Future<void> login({required String email, required String password}) async {
+  Future<void> login({
+    required String username,
+    required String password,
+  }) async {
     state = const AsyncLoading();
 
     final result = await _loginUseCase(
-      email: Email(email),
+      username: Username(username),
+      // email: Email(email),
       password: Password(password),
     );
 

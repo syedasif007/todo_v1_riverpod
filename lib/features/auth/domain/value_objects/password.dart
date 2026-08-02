@@ -15,8 +15,9 @@ class Password {
   static final RegExp _digit = RegExp(r'[0-9]');
   // Anything that is not a letter, digit, or whitespace.
   static final RegExp _special = RegExp(
-    r"[!@#\$%\^&\*\(\)_\+\-={}\[\]:;'\"
-    "<>,.\?/~`|\\]",
+    r"[!@#$%^&*()_+\-={}\[\]:;'"
+    r'"'
+    r"<>?,./~`|\\]",
   );
 
   factory Password(String input) {
@@ -44,30 +45,30 @@ class Password {
       return const Password._('', 'Password must not contain spaces.');
     }
 
-    if (!_uppercase.hasMatch(raw)) {
-      return const Password._(
-        '',
-        'Password must contain at least one uppercase letter.',
-      );
-    }
+    // if (!_uppercase.hasMatch(raw)) {
+    //   return const Password._(
+    //     '',
+    //     'Password must contain at least one uppercase letter.',
+    //   );
+    // }
 
-    if (!_lowercase.hasMatch(raw)) {
-      return const Password._(
-        '',
-        'Password must contain at least one lowercase letter.',
-      );
-    }
+    // if (!_lowercase.hasMatch(raw)) {
+    //   return const Password._(
+    //     '',
+    //     'Password must contain at least one lowercase letter.',
+    //   );
+    // }
 
-    if (!_digit.hasMatch(raw)) {
-      return const Password._('', 'Password must contain at least one digit.');
-    }
+    // if (!_digit.hasMatch(raw)) {
+    //   return const Password._('', 'Password must contain at least one digit.');
+    // }
 
-    if (!_special.hasMatch(raw)) {
-      return const Password._(
-        '',
-        'Password must contain at least one special character.',
-      );
-    }
+    // if (!_special.hasMatch(raw)) {
+    //   return const Password._(
+    //     '',
+    //     'Password must contain at least one special character.',
+    //   );
+    // }
 
     return Password._(raw, null);
   }

@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../../core/infrastructure/network/http_client.dart';
 import '../datasources/auth_remote_datasource.dart';
@@ -12,18 +15,34 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
 
   @override
   Future<UserDto> login({
-    required String email,
+    required String username,
+    // required String email,
     required String password,
   }) async {
     try {
+      final String jsonString = jsonEncode({
+        'username': username,
+        'password': password,
+      });
+
+      if (kDebugMode) {
+        print('#0-AuthRemoteDatasourceImpl.login: Request body: $jsonString');
+      }
+
       final response = await _http.dio.post<Map<String, dynamic>>(
         'auth/login',
-        data: {'username': email, 'password': password},
+        data: jsonString,
+        // data: {'username': username, 'password': password},
       );
 
       final data = response.data;
 
       if (data == null) {
+        if (kDebugMode) {
+          print(
+            '#4-AuthRemoteDatasourceImpl.login: data is null. Response: ${response.toString()}',
+          );
+        }
         throw const UnexpectedFailure();
       }
 
@@ -45,8 +64,18 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
         throw const InvalidCredentialsFailure();
       }
 
+      if (kDebugMode) {
+        print(
+          '#5-AuthRemoteDatasourceImpl.login: Unexpected error: ${e.message}',
+        );
+      }
       throw const UnexpectedFailure();
-    } catch (_) {
+    } catch (e) {
+      if (kDebugMode) {
+        print(
+          '#6-AuthRemoteDatasourceImpl.login: Unexpected error: ${e.toString()}',
+        );
+      }
       throw const UnexpectedFailure();
     }
   }

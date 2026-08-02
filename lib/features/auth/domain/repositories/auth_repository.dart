@@ -3,10 +3,12 @@ import '../entities/user.dart';
 import '../failures/auth_failure.dart';
 import '../value_objects/email.dart';
 import '../value_objects/password.dart';
+import '../value_objects/username.dart';
 
 abstract class AuthRepository {
   Future<Result<AuthFailure, User>> login({
-    required Email email,
+    required Username username,
+    // required Email email,
     required Password password,
   });
 

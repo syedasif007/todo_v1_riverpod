@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo_v1_riverpod/features/auth/domain/value_objects/username.dart';
 
 import '../../domain/value_objects/email.dart';
 import '../../domain/value_objects/password.dart';
@@ -15,7 +16,8 @@ class LoginPage extends ConsumerStatefulWidget {
 
 class _LoginPageState extends ConsumerState<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final _email = TextEditingController();
+  final _username = TextEditingController();
+  // final _email = TextEditingController();
   final _password = TextEditingController();
 
   // Guard against re-pushing TaskListPage on rebuilds. pushReplacement
@@ -25,41 +27,50 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   bool _navigated = false;
 
   // Re-validate as the user types so the UI updates live.
-  void _onEmailChanged() => setState(() {});
+  void _onUsernameChanged() => setState(() {});
+  // void _onEmailChanged() => setState(() {});
   void _onPasswordChanged() => setState(() {});
 
   @override
   void initState() {
     super.initState();
-    _email.addListener(_onEmailChanged);
+    _username.addListener(_onUsernameChanged);
+    // _email.addListener(_onEmailChanged);
     _password.addListener(_onPasswordChanged);
   }
 
   @override
   void dispose() {
-    _email.removeListener(_onEmailChanged);
+    _username.removeListener(_onUsernameChanged);
+    // _email.removeListener(_onEmailChanged);
     _password.removeListener(_onPasswordChanged);
-    _email.dispose();
+    _username.dispose();
+    // _email.dispose();
     _password.dispose();
     super.dispose();
   }
 
   // Build a fresh Email/Password from the current text to drive both the
   // form validators and the submit-button enabled state.
-  Email get _emailVO => Email(_email.text);
+  Username get _usernameVO => Username(_username.text);
+  // Email get _emailVO => Email(_email.text);
   Password get _passwordVO => Password(_password.text);
-  bool get _isFormValid => _emailVO.isValid && _passwordVO.isValid;
+  bool get _isFormValid => _usernameVO.isValid && _passwordVO.isValid;
+  // bool get _isFormValid => _emailVO.isValid && _passwordVO.isValid;
 
   Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    final emailVO = _emailVO;
+    final usernameVO = _usernameVO;
+    // final emailVO = _emailVO;
     final passwordVO = _passwordVO;
-    if (!emailVO.isValid || !passwordVO.isValid) return;
+    if (!usernameVO.isValid || !passwordVO.isValid) return;
+    // if (!emailVO.isValid || !passwordVO.isValid) return;
 
     await ref
         .read(authControllerProvider.notifier)
-        .login(email: emailVO.value, password: passwordVO.value);
+        .login(username: usernameVO.value, password: passwordVO.value);
+    // .login(email: emailVO.value, password: passwordVO.value);
   }
 
   /// When the controller's state flips to a logged-in [User], push the
@@ -98,17 +109,30 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               TextFormField(
-                controller: _email,
-                keyboardType: TextInputType.emailAddress,
+                controller: _username,
+                keyboardType: TextInputType.name,
                 autocorrect: false,
                 textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(
-                  labelText: 'Email',
+                  labelText: 'Username',
                   border: OutlineInputBorder(),
                 ),
-                validator: (_) => _emailVO.error,
+                validator: (_) => _usernameVO.error,
+                onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
               ),
               const SizedBox(height: 12),
+              //   controller: _email,
+              //   keyboardType: TextInputType.emailAddress,
+              //   autocorrect: false,
+              //   textInputAction: TextInputAction.next,
+              //   decoration: const InputDecoration(
+              //     labelText: 'Email',
+              //     border: OutlineInputBorder(),
+              //   ),
+              //   validator: (_) => _emailVO.error,
+              //   onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
+              // ),
+              // const SizedBox(height: 12),
               TextFormField(
                 controller: _password,
                 obscureText: true,

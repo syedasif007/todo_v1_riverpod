@@ -12,7 +12,8 @@ class InvalidCredentialsFailure extends AuthFailure {
 
   @override
   String get message =>
-      'Invalid credentials. Please check your email and password.';
+      'Invalid credentials. Please check your username and password.';
+  // 'Invalid credentials. Please check your email and password.';
 }
 
 class NetworkFailure extends AuthFailure {
@@ -28,7 +29,7 @@ class UnexpectedFailure extends AuthFailure {
 
   @override
   String get message =>
-      'Something went wrong while logging in. Please try again later.';
+      'Something went wrong while logging in. Please try again later.\nIf the problem persists, please contact support.\nError code: UNEXPECTED_FAILURE';
 }
 
 class InvalidInputFailure extends AuthFailure {
