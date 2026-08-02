@@ -4,6 +4,7 @@ import 'package:todo_v1_riverpod/features/auth/presentation/pages/login_page.dar
 
 import '../../features/auth/presentation/pages/auth_gate.dart';
 import '../../features/splash/presentation/splash_page.dart';
+import '../../features/todo/presentation/pages/todo_list_page.dart';
 
 extension Convert on String {
   String get p => '/$this';
@@ -17,6 +18,7 @@ class Routes {
   static const onboarding = 'onboarding';
   static const login = 'login';
   static const home = 'home';
+  static const todo = 'todo';
   static const profile = 'profile';
   static const bookmarks = 'bookmarks';
   static const settings = 'settings';
@@ -42,6 +44,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.login.p,
         name: Routes.login,
         builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: Routes.todo.p,
+        name: Routes.todo,
+        builder: (context, state) => const TodoListPage(),
       ),
     ],
   );

@@ -9,7 +9,7 @@ import 'login_page.dart';
 /// Decides which page to show at app start:
 /// - splash while the persisted session is being read,
 /// - [LoginPage] when there is no active session,
-/// - [TaskListPage] otherwise.
+/// - [TodoListPage] otherwise.
 ///
 /// After a successful login, the [LoginPage] itself pushes a replacement
 /// onto the navigator so this widget is not reactive to login state changes
@@ -26,7 +26,7 @@ class AuthGate extends ConsumerWidget {
       error: (_, _) => const LoginPage(),
       data: (isAuthenticated) {
         if (isAuthenticated) {
-          return const TaskListPage();
+          return const TodoListPage();
         }
         return const LoginPage();
       },

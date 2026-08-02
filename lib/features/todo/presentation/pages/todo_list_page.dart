@@ -5,8 +5,8 @@ import '../../providers/todo_providers.dart';
 import '../../../auth/presentation/pages/login_page.dart';
 import '../../../auth/providers/auth_providers.dart';
 
-class TaskListPage extends ConsumerWidget {
-  const TaskListPage({super.key});
+class TodoListPage extends ConsumerWidget {
+  const TodoListPage({super.key});
 
   Future<void> _logout(BuildContext context, WidgetRef ref) async {
     // Clear persisted tokens + the in-memory controller state, then route

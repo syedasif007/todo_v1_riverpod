@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:todo_v1_riverpod/features/auth/domain/value_objects/username.dart';
 
+import '../../../../app/router/routes.dart';
 import '../../domain/value_objects/email.dart';
 import '../../domain/value_objects/password.dart';
 import '../../providers/auth_providers.dart';
@@ -83,9 +85,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     if (user == null) return;
 
     _navigated = true;
-    Navigator.of(context, rootNavigator: true).pushReplacement(
-      MaterialPageRoute<void>(builder: (_) => const TaskListPage()),
-    );
+    context.goNamed(Routes.todo);
   }
 
   @override
@@ -118,7 +118,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (_) => _usernameVO.error,
-                onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
+                // onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
+                onFieldSubmitted: (_) => _submit(),
               ),
               const SizedBox(height: 12),
               //   controller: _email,
