@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../splash/presentation/splash_page.dart';
 import '../../providers/auth_providers.dart';
 import '../../../todo/presentation/pages/todo_list_page.dart';
 import 'login_page.dart';
@@ -21,7 +22,7 @@ class AuthGate extends ConsumerWidget {
     final sessionAsync = ref.watch(sessionProvider);
 
     return sessionAsync.when(
-      loading: () => const _SplashPage(),
+      loading: () => const SplashPage(),
       error: (_, _) => const LoginPage(),
       data: (isAuthenticated) {
         if (isAuthenticated) {
@@ -30,14 +31,5 @@ class AuthGate extends ConsumerWidget {
         return const LoginPage();
       },
     );
-  }
-}
-
-class _SplashPage extends StatelessWidget {
-  const _SplashPage();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }
