@@ -7,9 +7,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:todo_v1_riverpod/main.dart';
 
 void main() {
   testWidgets('App builds and shows Tasks app bar', (
