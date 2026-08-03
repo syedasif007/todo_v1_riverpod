@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todo_v1_riverpod/features/auth/presentation/pages/auth_gate.dart';
 
 import 'app/router/routes.dart';
 
@@ -22,9 +21,6 @@ class MyApp extends ConsumerWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       routerConfig: router,
-      // builder: (context, _) {
-      //   return AuthGate(key: const ValueKey('auth-gate'));
-      // },
     );
   }
 }

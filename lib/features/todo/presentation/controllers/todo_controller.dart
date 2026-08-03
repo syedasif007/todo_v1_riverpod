@@ -41,4 +41,22 @@ class TodoController extends AsyncNotifier<TodoControllerState> {
   Future<void> refresh() async {
     state = AsyncValue.data(await _loadTodos());
   }
+
+  void toggleTodoCompletion(Todo todo) {
+    final current = state.value; // TodoControllerState?
+    if (current == null) return;
+
+    final updatedTodos = [
+      for (final t in current.todos)
+        if (t.id == todo.id) t.copyWith(isCompleted: !t.isCompleted) else t,
+    ];
+
+    state = AsyncValue.data(current.copyWith(todos: updatedTodos));
+
+    // if (state.value == null) return;
+
+    // state = AsyncValue.data(
+    //   state.value!.copyWith(todos: [...state.value!.todos]),
+    // );
+  }
 }

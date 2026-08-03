@@ -5,6 +5,7 @@ import '../application/usecases/fetch_todo_list_usecase.dart';
 import '../data/datasources/todo_remote_datasource.dart';
 import '../data/datasources/todo_remote_datasource_impl.dart';
 import '../data/repositories/todo_repository_impl.dart';
+import '../domain/repositories/todo_repository.dart';
 import '../presentation/controllers/todo_controller.dart';
 
 final todoRemoteDatasourceProvider = Provider<TodoRemoteDatasource>((ref) {
@@ -12,7 +13,7 @@ final todoRemoteDatasourceProvider = Provider<TodoRemoteDatasource>((ref) {
   return TodoRemoteDatasourceImpl(http);
 });
 
-final todoRepositoryProvider = Provider((ref) {
+final todoRepositoryProvider = Provider<TodoRepository>((ref) {
   final remote = ref.watch(todoRemoteDatasourceProvider);
   return TodoRepositoryImpl(remote);
 });

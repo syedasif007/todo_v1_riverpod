@@ -10,4 +10,13 @@ class Todo {
     required this.todo,
     required this.isCompleted,
   });
+
+  Todo copyWith({String? id, String? userId, String? todo, bool? isCompleted}) {
+    return Todo(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      todo: todo ?? this.todo,
+      isCompleted: isCompleted ?? this.isCompleted,
+    );
+  }
 }

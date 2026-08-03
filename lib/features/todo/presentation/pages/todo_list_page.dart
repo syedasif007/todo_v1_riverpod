@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../app/router/routes.dart';
 import '../../providers/todo_providers.dart';
-import '../../../auth/presentation/pages/login_page.dart';
 import '../../../auth/providers/auth_providers.dart';
 
 class TodoListPage extends ConsumerWidget {
@@ -13,10 +14,7 @@ class TodoListPage extends ConsumerWidget {
     // the user back to the login screen.
     await ref.read(authControllerProvider.notifier).logout();
     if (!context.mounted) return;
-    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-      MaterialPageRoute<void>(builder: (_) => const LoginPage()),
-      (_) => false,
-    );
+    context.pushReplacementNamed(Routes.login);
   }
 
   @override
@@ -84,7 +82,14 @@ class TodoListPage extends ConsumerWidget {
               return ListTile(
                 title: Text(todo.userId),
                 subtitle: Text(todo.todo),
-                leading: Checkbox(value: todo.isCompleted, onChanged: null),
+                leading: Checkbox(
+                  value: todo.isCompleted,
+                  onChanged: (value) {
+                    ref
+                        .read(todoControllerProvider.notifier)
+                        .toggleTodoCompletion(todo);
+                  },
+                ),
               );
             },
           );
