@@ -3,10 +3,9 @@
 // while keeping the fields private (prefixed with `_`) as an implementation
 // detail, so the initializing-formal shortcut cannot be used.
 
-import 'package:flutter/foundation.dart';
-
 import '../../../../core/common/result.dart';
 import '../../../../core/services/auth_token_storage.dart';
+import '../../../../core/utils/logger/logger.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/failures/auth_failure.dart';
 import '../../domain/repositories/auth_repository.dart';
@@ -52,18 +51,15 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return SuccessResult<AuthFailure, User>(model.toEntity());
     } on AuthFailure catch (f) {
-      if (kDebugMode) {
-        print(
-          '#1-AuthRemoteDatasourceImpl.login: Unexpected error: ${f.message}',
-        );
-      }
+      Logger.log('#1-AuthRepositoryImpl.login: AuthFailure: ${f.toString()}');
       return FailureResult<AuthFailure, User>(f);
     } catch (e) {
-      if (kDebugMode) {
-        print(
-          '#2-AuthRemoteDatasourceImpl.login: Unexpected error: ${e.toString()}',
-        );
-      }
+      Logger.log(
+        '#2-AuthRepositoryImpl.login: Unexpected error: ${e.toString()}',
+      );
+      Logger.log(
+        '#3-AuthRepositoryImpl.login: Stack trace: ${StackTrace.current}',
+      );
       return const FailureResult<AuthFailure, User>(UnexpectedFailure());
     }
   }
@@ -134,11 +130,9 @@ class AuthRepositoryImpl implements AuthRepository {
     } on AuthFailure catch (f) {
       return FailureResult<AuthFailure, void>(f);
     } catch (e) {
-      if (kDebugMode) {
-        print(
-          '#3-AuthRemoteDatasourceImpl.login: Unexpected error: ${e.toString()}',
-        );
-      }
+      Logger.log(
+        '#4-AuthRepositoryImpl.refreshTokens: Unexpected error: ${e.toString()}',
+      );
       return const FailureResult<AuthFailure, void>(UnexpectedFailure());
     }
   }

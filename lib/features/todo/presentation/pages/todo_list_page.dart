@@ -87,7 +87,7 @@ class TodoListPage extends ConsumerWidget {
                   onChanged: (value) {
                     ref
                         .read(todoControllerProvider.notifier)
-                        .toggleTodoCompletion(todo);
+                        .updateTodoCompletion(todo, value ?? false);
                   },
                 ),
               );

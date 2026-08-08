@@ -4,10 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:todo_v1_riverpod/features/auth/domain/value_objects/username.dart';
 
 import '../../../../app/router/routes.dart';
-import '../../domain/value_objects/email.dart';
 import '../../domain/value_objects/password.dart';
 import '../../providers/auth_providers.dart';
-import '../../../todo/presentation/pages/todo_list_page.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});

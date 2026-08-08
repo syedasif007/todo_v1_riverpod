@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../application/usecases/fetch_todo_list_usecase.dart';
+import '../../application/usecases/update_todo_completion_usecase.dart';
 import '../../domain/entities/todo.dart';
 import '../../domain/failures/todo_failure.dart';
 import '../../providers/todo_providers.dart';
@@ -20,10 +21,14 @@ class TodoControllerState {
 
 class TodoController extends AsyncNotifier<TodoControllerState> {
   late FetchTodoListUseCase _fetchTodoListUseCase;
+  late UpdateTodoCompletionUseCase _updateTodoCompletionUseCase;
 
   @override
   Future<TodoControllerState> build() async {
     _fetchTodoListUseCase = ref.read(fetchTodoListUseCaseProvider);
+    _updateTodoCompletionUseCase = ref.read(
+      updateTodoCompletionUseCaseProvider,
+    );
     return await _loadTodos();
   }
 
@@ -42,21 +47,44 @@ class TodoController extends AsyncNotifier<TodoControllerState> {
     state = AsyncValue.data(await _loadTodos());
   }
 
-  void toggleTodoCompletion(Todo todo) {
-    final current = state.value; // TodoControllerState?
+  /// Updates the completion flag for [todo] to [isCompleted].
+  ///
+  /// The local state is mutated immediately (optimistic update) so the
+  /// checkbox reflects the new value without waiting for the network. On
+  /// failure the previous list is restored; on success the entry is
+  /// replaced with whatever the server returned.
+  Future<void> updateTodoCompletion(Todo todo, bool isCompleted) async {
+    final current = state.value;
     if (current == null) return;
 
-    final updatedTodos = [
-      for (final t in current.todos)
-        if (t.id == todo.id) t.copyWith(isCompleted: !t.isCompleted) else t,
+    final previousTodos = current.todos;
+    final optimisticTodos = [
+      for (final t in previousTodos)
+        if (t.id == todo.id) t.copyWith(isCompleted: isCompleted) else t,
     ];
 
-    state = AsyncValue.data(current.copyWith(todos: updatedTodos));
+    state = AsyncValue.data(current.copyWith(todos: optimisticTodos));
 
-    // if (state.value == null) return;
+    final result = await _updateTodoCompletionUseCase(
+      id: todo.id,
+      isCompleted: isCompleted,
+    );
 
-    // state = AsyncValue.data(
-    //   state.value!.copyWith(todos: [...state.value!.todos]),
-    // );
+    result.fold(
+      (failure) {
+        // Roll back to the snapshot taken before the optimistic update
+        // so the UI matches the source of truth (the server).
+        state = AsyncValue.data(current.copyWith(todos: previousTodos));
+      },
+      (updatedTodo) {
+        // Sync the local entry with the server's representation in case
+        // it normalised any field.
+        final syncedTodos = [
+          for (final t in state.value!.todos)
+            if (t.id == updatedTodo.id) updatedTodo else t,
+        ];
+        state = AsyncValue.data(state.value!.copyWith(todos: syncedTodos));
+      },
+    );
   }
 }

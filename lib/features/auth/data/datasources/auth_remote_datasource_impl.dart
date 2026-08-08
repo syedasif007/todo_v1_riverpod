@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 import '../../../../core/infrastructure/network/http_client.dart';
+import '../../../../core/utils/logger/logger.dart';
 import '../datasources/auth_remote_datasource.dart';
 import '../dtos/user_dto.dart';
 import '../../domain/failures/auth_failure.dart';
@@ -25,10 +25,6 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
         'password': password,
       });
 
-      if (kDebugMode) {
-        print('#0-AuthRemoteDatasourceImpl.login: Request body: $jsonString');
-      }
-
       final response = await _http.dio.post<Map<String, dynamic>>(
         'auth/login',
         data: jsonString,
@@ -38,11 +34,7 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
       final data = response.data;
 
       if (data == null) {
-        if (kDebugMode) {
-          print(
-            '#4-AuthRemoteDatasourceImpl.login: data is null. Response: ${response.toString()}',
-          );
-        }
+        Logger.log('login error: No data received');
         throw const UnexpectedFailure();
       }
 
@@ -55,27 +47,21 @@ class AuthRemoteDatasourceImpl implements AuthRemoteDatasource {
           e.type == DioExceptionType.unknown;
 
       if (isNetwork) {
+        Logger.log('login error: Network issue: ${e.message}');
         throw const NetworkFailure();
       }
 
       final status = e.response?.statusCode;
 
       if (status == 400 || status == 401 || status == 403) {
+        Logger.log('login error: Invalid credentials: ${e.message}');
         throw const InvalidCredentialsFailure();
       }
 
-      if (kDebugMode) {
-        print(
-          '#5-AuthRemoteDatasourceImpl.login: Unexpected error: ${e.message}',
-        );
-      }
+      Logger.log('login error: Unknown error: ${e.message}');
       throw const UnexpectedFailure();
     } catch (e) {
-      if (kDebugMode) {
-        print(
-          '#6-AuthRemoteDatasourceImpl.login: Unexpected error: ${e.toString()}',
-        );
-      }
+      Logger.log('login error: Unexpected error: ${e.toString()}');
       throw const UnexpectedFailure();
     }
   }

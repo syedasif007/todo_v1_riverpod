@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/infrastructure/di/network_providers.dart';
 import '../application/usecases/fetch_todo_list_usecase.dart';
+import '../application/usecases/update_todo_completion_usecase.dart';
 import '../data/datasources/todo_remote_datasource.dart';
 import '../data/datasources/todo_remote_datasource_impl.dart';
 import '../data/repositories/todo_repository_impl.dart';
@@ -22,6 +23,12 @@ final fetchTodoListUseCaseProvider = Provider<FetchTodoListUseCase>((ref) {
   final repo = ref.watch(todoRepositoryProvider);
   return FetchTodoListUseCase(repo);
 });
+
+final updateTodoCompletionUseCaseProvider =
+    Provider<UpdateTodoCompletionUseCase>((ref) {
+      final repo = ref.watch(todoRepositoryProvider);
+      return UpdateTodoCompletionUseCase(repo);
+    });
 
 final todoControllerProvider =
     AsyncNotifierProvider<TodoController, TodoControllerState>(

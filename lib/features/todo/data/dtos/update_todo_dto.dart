@@ -1,27 +1,12 @@
-import '../../../../core/utils/value_parsing/safe_value_parser.dart';
-
+/// Request body for `PUT /todos/{id}`.
+///
+/// DummyJSON only requires the fields the caller wants to update, so this
+/// DTO currently carries only `completed` (the only field the update
+/// feature touches). Extend it as more update fields are introduced.
 class UpdateTodoDto {
-  final String title;
-  final String description;
   final bool completed;
 
-  const UpdateTodoDto({
-    required this.title,
-    required this.description,
-    required this.completed,
-  });
+  const UpdateTodoDto({required this.completed});
 
-  factory UpdateTodoDto.fromJson(Map<String, dynamic> json) {
-    return UpdateTodoDto(
-      title: SafeValueParser.readString(json['title']),
-      description: SafeValueParser.readString(json['description']),
-      completed: SafeValueParser.readBool(json['completed']),
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-    'title': title,
-    'description': description,
-    'completed': completed,
-  };
+  Map<String, dynamic> toJson() => {'completed': completed};
 }
